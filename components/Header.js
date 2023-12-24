@@ -1,16 +1,23 @@
+import { CartContext } from "@/lib/CartContext";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useContext } from "react";
 
 export default function Header() {
   const router = useRouter();
   const { pathname } = router;
 
+  const { cartProducts } = useContext(CartContext);
+
   const active = 'text-primary transition hover:text-secondary font-bold'
   const inactive = 'text-gray-500 transition hover:text-gray-500/75 font-medium'
 
+  const { data: session } = useSession()
+
   return <>
-    <header className="bg-white border-b border-primary border-opacity-30">
-      <div className="mx-auto flex h-16 max-w-screen-2xl items-center gap-8 px-4 sm:px-6 lg:px-8">
+    <header className="bg-white border-b border-primary border-opacity-30 sticky top-0 z-40">
+      <div className="mx-auto flex h-16 max-w-screen-2xl items-center gap-8 px-4 sm:px-6 lg:px-8 text-xl ">
         <Link className=" text-primary flex items-center gap-1" href="/">
           <span className="sr-only">Home</span>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-5 h-5">
@@ -34,20 +41,31 @@ export default function Header() {
 
           <div className="flex items-center gap-4">
             <div className="sm:flex sm:gap-4 items-center">
-              <Link
+              {session ? (
+                <div className="sm:flex sm:gap-2 border-r pr-4">
+                  <div className="h-9 w-9">
+                    <img src={session.user.image} alt={session.user.name} className="h-full w-full rounded-full object-cover object-center" />
+                  </div>
+                </div>
+              ) : (
+                <Link
                 className=" text-sm font-medium px-4 py-1   transition border-r border-primary "
                 href="/"
               >
                 Account
               </Link>
+              )}
 
               <Link
-                className="hidden rounded-md   text-sm font-medium  transition  sm:block"
-                href="/"
+                className="group rounded-md   text-sm flex items-center font-medium  transition p-2 "
+                href="/cart"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-5 h-5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                 </svg>
+                <span className="ml-2 text-primary font-bold group-hover:text-text">
+                  {cartProducts.length}
+                </span>
 
               </Link>
             </div>
