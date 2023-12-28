@@ -40,7 +40,7 @@ export default function Collection({ product }) {
                   </div>
                 </div>
 
-                <div className="lg-col-span-2 lg:py-8">
+                <div className="lg:col-span-2 lg:py-8">
                   <ul className="grid grid-cols-2 gap-4">
                     <li>
                       <div className="block group">
